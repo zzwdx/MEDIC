@@ -1,5 +1,5 @@
 from torchvision import transforms
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, ConcatDataset
 from dataset.dataset import SingleDomainData, MultiDomainData
 
 def get_transform(instr, small_img=False, color_jitter=True, random_grayscale=True):
@@ -49,11 +49,26 @@ def get_transform(instr, small_img=False, color_jitter=True, random_grayscale=Tr
 
     return transform_map[instr]
 
+
 def get_dataloader(root_dir, domain, classes, batch_size, domain_class_dict=None, get_domain_label=True, get_class_label=True, instr="train", small_img=False, shuffle=True, drop_last=True, num_workers=4):
     if isinstance(domain, list): 
-        dataset = MultiDomainData(root_dir=root_dir, domain=domain, classes=classes, domain_class_dict=domain_class_dict, get_domain_label=get_domain_label, get_classes_label=get_class_label, transform=get_transform(instr, small_img=small_img))
+        if isinstance(root_dir, list):
+            dataset_list = []
+            for r in root_dir:
+                sub_dataset = MultiDomainData(root_dir=r, domain=domain, classes=classes, domain_class_dict=domain_class_dict, get_domain_label=get_domain_label, get_classes_label=get_class_label, transform=get_transform(instr, small_img=small_img))
+                dataset_list.append(sub_dataset)
+            dataset = ConcatDataset(dataset_list)
+        else:    
+            dataset = MultiDomainData(root_dir=root_dir, domain=domain, classes=classes, domain_class_dict=domain_class_dict, get_domain_label=get_domain_label, get_classes_label=get_class_label, transform=get_transform(instr, small_img=small_img))
     else:
-        dataset = SingleDomainData(root_dir=root_dir, domain=domain, classes=classes, domain_label=-1, get_classes_label=get_class_label, transform=get_transform(instr, small_img=small_img))
+        if isinstance(root_dir, list):
+            dataset_list = []
+            for r in root_dir:
+                sub_dataset = SingleDomainData(root_dir=r, domain=domain, classes=classes, domain_label=-1, get_classes_label=get_class_label, transform=get_transform(instr, small_img=small_img))
+                dataset_list.append(sub_dataset)
+            dataset = ConcatDataset(dataset_list)
+        else:  
+            dataset = SingleDomainData(root_dir=root_dir, domain=domain, classes=classes, domain_label=-1, get_classes_label=get_class_label, transform=get_transform(instr, small_img=small_img))
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, drop_last=drop_last, num_workers=num_workers)
     return dataloader
 
