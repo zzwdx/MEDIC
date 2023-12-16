@@ -1,5 +1,7 @@
 # MEDIC
 
+Please skip to our new repository [MEDIC++](https://github.com/zzwdx/MEDIC++) for faster execution speed and higher performance.
+
 ### 1. Introduction
 
 This repository contains the implementation of the paper **Generalizable Decision Boundaries: Dualistic Meta-Learning for Open Set Domain Generalization**: 
