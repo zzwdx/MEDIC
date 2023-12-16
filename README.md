@@ -1,6 +1,6 @@
 # MEDIC
 
-Please skip to our new repository [MEDIC++](https://github.com/zzwdx/MEDIC++) for faster execution speed and higher performance.
+Please skip to our new repository [MEDIC++](https://github.com/zzwdx/MEDIC-plus) for faster execution speed and higher performance.
 
 ### 1. Introduction
 
